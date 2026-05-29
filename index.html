@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SSH Security Auditor — narzędzie do zdalnego audytu bezpieczeństwa serwerów Linux przez SSH">
+    <title>SSH Security Auditor v2.0</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="terminal-container">
+        <header class="terminal-header">
+            <div class="terminal-controls">
+                <span class="control close"></span>
+                <span class="control minimize"></span>
+                <span class="control maximize"></span>
+            </div>
+            <div class="title">
+                <span class="kali-logo">⚡</span>
+                SSH Security Auditor v2.0
+                <span class="status-indicator" id="status">READY</span>
+            </div>
+        </header>
+
+        <main class="terminal-body">
+            <div class="banner">
+                <pre class="ascii-art">
+    ███████╗███████╗██╗  ██╗     █████╗ ██╗   ██╗██████╗ ██╗████████╗
+    ██╔════╝██╔════╝██║  ██║    ██╔══██╗██║   ██║██╔══██╗██║╚══██╔══╝
+    ███████╗███████╗███████║    ███████║██║   ██║██║  ██║██║   ██║
+    ╚════██║╚════██║██╔══██║    ██╔══██║██║   ██║██║  ██║██║   ██║
+    ███████║███████║██║  ██║    ██║  ██║╚██████╔╝██████╔╝██║   ██║
+    ╚══════╝╚══════╝╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝   ╚═╝
+                </pre>
+                <div class="version-info">
+                    <span>Version 2.0</span>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="target-ip">
+                        <span class="prompt">root@kali:~#</span> Target IP Address:
+                    </label>
+                    <input type="text" id="target-ip" placeholder="192.168.1.100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ssh-user">SSH Username:</label>
+                    <input type="text" id="ssh-user" placeholder="root" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ssh-password">SSH Password:</label>
+                    <input type="password" id="ssh-password" placeholder="••••••••" required>
+                </div>
+
+                <button id="audit-btn" class="audit-button">
+                    <span class="btn-text">INITIATE SECURITY AUDIT</span>
+                    <span class="btn-icon">⚡</span>
+                </button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <span class="output-title">[AUDIT RESULTS]</span>
+                    <span class="timestamp" id="timestamp"></span>
+                </div>
+                <div class="terminal-output" id="output">
+                    <div class="log-entry">
+                        <span class="timestamp">[00:00:00]</span>
+                        <span class="log-info">[INFO]</span>
+                        System ready. Waiting for target configuration...
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section" id="progress-section" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">Initializing...</div>
+            </div>
+
+            <div class="checklist-section" id="checklist-section" style="display: block;">
+                <div class="checklist-header">
+                    <span class="checklist-title">✓ CHECKLIST - PODSTAWOWE USTAWIENIA</span>
+                    <button id="toggle-checklist" class="toggle-button">Zwiń</button>
+                </div>
+                <div class="checklist-content" id="checklist-content">
+                    <div class="checklist-category">
+                        <h3 class="category-title">1. Tożsamość serwera i sieć</h3>
+                        <div class="checklist-items">
+                            <label class="checklist-item">
+                                <input type="checkbox" id="hostname-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Zmiana nazwy hosta (hostname): Zmodyfikuj plik /etc/hostname</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="hosts-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Konfiguracja pliku /etc/hosts: Zaktualizuj adresy IP i nazwy DNS</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="static-ip-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Ustawienie stałego adresu IP: Skonfiguruj statyczny adres IP, bramę i serwery DNS</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category">
+                        <h3 class="category-title">2. Czas i strefa czasowa</h3>
+                        <div class="checklist-items">
+                            <label class="checklist-item">
+                                <input type="checkbox" id="timezone-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Ustawienie strefy czasowej: Sprawdź timedatectl status i ustaw właściwą strefę</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="ntp-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Konfiguracja serwera NTP: Synchronizacja czasu z odpowiednim serwerem NTP</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category">
+                        <h3 class="category-title">3. Zarządzanie użytkownikami i dostępem</h3>
+                        <div class="checklist-items">
+                            <label class="checklist-item">
+                                <input type="checkbox" id="new-user-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Utworzenie nowego użytkownika: Unikaj codziennej pracy na koncie root</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="sudo-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Nadanie uprawnień administracyjnych: Dodaj użytkownika do grupy sudo/wheel</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="password-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Ustawienie hasła: Nadaj bezpieczne hasło nowemu użytkownikowi</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="ssh-security-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Zabezpieczenie SSH: Skonfiguruj klucze publiczne i wyłącz logowanie root</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category">
+                        <h3 class="category-title">4. Aktualizacje i pakiety</h3>
+                        <div class="checklist-items">
+                            <label class="checklist-item">
+                                <input type="checkbox" id="system-update-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Aktualizacja systemu: Wykonaj pełną aktualizację pakietów na serwerze</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="auto-updates-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Automatyzacja aktualizacji: Rozważ automatyczne instalowanie poprawek</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="required-packages-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Instalacja niezbędnych narzędzi: Zainstaluj wymagane pakiety i biblioteki</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category">
+                        <h3 class="category-title">5. Bezpieczeństwo (podstawy)</h3>
+                        <div class="checklist-items">
+                            <label class="checklist-item">
+                                <input type="checkbox" id="firewall-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Weryfikacja Firewalla: Sprawdź status zapory sieciowej i otwarte porty</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="selinux-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Sprawdzenie statusu SELinux: Upewnij się, że SELinux jest uruchomiony</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="checklist-category">
+                        <h3 class="category-title">6. Środowisko i aplikacje</h3>
+                        <div class="checklist-items">
+                            <label class="checklist-item">
+                                <input type="checkbox" id="editor-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Ustawienie domyślnego edytora: Skonfiguruj preferowany edytor tekstu</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="licenses-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Zarządzanie licencjami: Wgraj odpowiednie licencje dla oprogramowania</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" id="app-config-check">
+                                <span class="checkmark"></span>
+                                <span class="item-text">Konfiguracja pod aplikacje: Ustawienia dla Apache, baz danych, systemów monitoringu</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="checklist-progress">
+                        <div class="progress-info">
+                            <span>Postęp: <span id="checklist-progress">0</span> / <span id="checklist-total">18</span> (<span id="checklist-percentage">0%</span>)</span>
+                        </div>
+                        <div class="progress-bar-checklist">
+                            <div class="progress-fill-checklist" id="progress-fill-checklist"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-section" id="summary-section" style="display: none;">
+                <div class="summary-header">
+                    <span class="summary-title">📋 PODSUMOWANIE AUDYTU BEZPIECZEŃSTWA</span>
+                </div>
+                <div class="summary-content" id="summary-content">
+                    <!-- Treść podsumowania będzie wstawiana tutaj -->
+                </div>
+            </div>
+        </main>
+
+        <footer class="terminal-footer">
+            <span>SSH Security Auditor © 2024 | Kali Linux Themed</span>
+            <span class="connection-status">Status: <span id="conn-status">Disconnected</span></span>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

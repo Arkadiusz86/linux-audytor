@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.local
+.env.production
+*.log
+npm-debug.log*
+audyt-launchowy-*.md
+certs/
+.claude/

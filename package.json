@@ -1,0 +1,35 @@
+{
+  "name": "ssh-security-auditor",
+  "version": "2.0.0",
+  "description": "SSH Security Auditor - Kali Linux themed web application for remote firewall auditing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "ssh",
+    "security",
+    "audit",
+    "firewall",
+    "kali-linux",
+    "penetration-testing"
+  ],
+  "author": "SSH Security Auditor Team",
+  "license": "MIT",
+  "dependencies": {
+    "@fontsource/fira-code": "^5.2.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.1.0",
+    "ssh2": "^1.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
