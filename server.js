@@ -1145,7 +1145,7 @@ const tlsOptions = {
 };
 
 https.createServer(tlsOptions, app).listen(PORT, '0.0.0.0', () => {
-    console.log(`🔥 SSH Security Auditor running on https://192.168.1.64:${PORT}`);
+    console.log(`🔥 SSH Security Auditor running on https://localhost:${PORT}`);
     console.log(`🔒 HTTPS aktywne (self-signed cert — zaakceptuj wyjątek w przeglądarce)`);
     console.log(`⚡ Ready to audit remote systems`);
 });
