@@ -2,7 +2,7 @@
 
 > Webowa aplikacja w stylu Kali Linux do zdalnego audytu bezpieczeństwa firewalla przez SSH.
 
-![Zrzut ekranu](11.png)
+![Zrzut ekranu](https://github.com/Arkadiusz86/linux-audytor/blob/main/audytor.png)
 
 ---
 
